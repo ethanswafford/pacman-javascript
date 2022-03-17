@@ -109,8 +109,8 @@ function movePacman(e) {
 
     pacDotEaten()
     powerPelletEaten()
-    //checkForGameOver
-    //checkForWin
+    checkForGameOver()
+    //checkForWin()
 
 }
 document.addEventListener('keyup',movePacman)
@@ -190,10 +190,35 @@ function moveGhost(ghost) {
         if (ghost.isScared){
             squares[ghostCurrentIndex].classList.add('scared-ghost')
         }
-    
+
+        //if scared ghost eaten by pacman
+        if(ghost.isScared && squares[ghost.currentIndex].classList.contains(pac-man)) {
+            sqaures[ghost.currentIndex].classList.remove(ghost.className, 'ghost', 'scared-ghost')
+            ghost.currentIndex = ghost.startIndex
+            score +=100
+            squares[ghost.currentIndex].classList.add(ghost.className, 'ghost')
+        }
+        checkForGameOver()
     }, ghost.speed)
 }
 
+//check for game over
+if (squares[pacmanCurrentIndex].classList.contains('ghost') && !squares[pacmanCurrentIndex].classList.contains('scared-ghost')) {
+    ghosts.forEach(ghost => clearInterval(ghost.timerId))
+    document.removeEventListener('keyup', movePacman)
+    setTimeout(function(){alert('GAME-OVER!')}, 500)
+    //scoreDisplay.innerHTML = 'YOU WIN'
+}
+
+//check for win
+function checkWin() {
+    if(score === 274) {
+        ghosts.forEach(ghost => clearInterval(ghost.timerId))
+        document.removeEventListener('keyup', movePacman)
+        scoreDisplay.innerHTML = 'YOU-WIN!'
+        // setTimeout(function(){alert('YOU-WIN!')}, 500)
+    }
+}
 
 
 })
