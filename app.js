@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     const grid = document.querySelector('.grid')
     const scoreDisplay = document.querySelector('score')
-    const width = 20 
+    const width = 20 //28 x 28 = 784 squares
+    let score = 0  
 
     // layout of the grid and the content of squares
     const layout = [
@@ -73,7 +74,8 @@ function movePacman(e) {
 
     switch(e.keyCode) {
         case 37:
-            if(pacmanCurrentIndex % width !== 0 && !squares[pacmanCurrentIndex -1].classList.contains('wall') && !squares[pacmanCurrentIndex -1].classList.contains('ghost-lair')) pacmanCurrentIndex -=1
+            if(pacmanCurrentIndex % width !== 0 && !squares[pacmanCurrentIndex -1].classList.contains('wall') && !squares[pacmanCurrentIndex -1].classList.contains('ghost-lair')) 
+            pacmanCurrentIndex -=1
             break
             //check if pacman is in the left exit 
             if((pacmanCurrentIndex -1) === 363) {
@@ -83,10 +85,12 @@ function movePacman(e) {
             }
             break
         case 38:
-            if(pacmanCurrentIndex - width >= 0 && !squares[pacmanCurrentIndex -width].classList.contains('wall') && !squares[pacmanCurrentIndex -width].classList.contains('ghost-lair')) pacmanCurrentIndex -=width
+            if(pacmanCurrentIndex - width >= 0 && !squares[pacmanCurrentIndex -width].classList.contains('wall') && !squares[pacmanCurrentIndex -width].classList.contains('ghost-lair')) 
+            pacmanCurrentIndex -=width
             break
         case 39:
-            if(pacmanCurrentIndex % width < width -1 && !squares[pacmanCurrentIndex +1].classList.contains('wall') && !squares[pacmanCurrentIndex +1].classList.contains('ghost-lair')) pacmanCurrentIndex +=1 
+            if(pacmanCurrentIndex % width < width -1 && !squares[pacmanCurrentIndex +1].classList.contains('wall') && !squares[pacmanCurrentIndex +1].classList.contains('ghost-lair')) 
+            pacmanCurrentIndex +=1 
             break
 
             //check if pacman is in the right exit 
@@ -97,16 +101,56 @@ function movePacman(e) {
             }
             break
         case 40:
-            if(pacmanCurrentIndex + width < width * width && !squares[pacmanCurrentIndex +width].classList.contains('wall') && !squares[pacmanCurrentIndex +width].classList.contains('ghost-lair')) pacmanCurrentIndex +=width
+            if(pacmanCurrentIndex + width < width * width && !squares[pacmanCurrentIndex +width].classList.contains('wall') && !squares[pacmanCurrentIndex +width].classList.contains('ghost-lair')) 
+            pacmanCurrentIndex +=width
             break
     }
     squares[pacmanCurrentIndex].classList.add('pac-man')
 
-    //pacDotEaten()
+    pacDotEaten()
     //powerPelletEaten()
     //checkForGameOver
     //checkForWin
 
 }
 document.addEventListener('keyup',movePacman)
+
+//what happens when pac-man eats a pac dot
+function pacDotEaten() {
+    if (squares[pacmanCurrentIndex].classList.contins('pac-dot')) {
+        score++
+        scoreDisplay.innerHTML = score
+        squares[pacmanCurrentIndex].classList.remove('pac-dot')
+    }
+}
+
+//create ghost template 
+class Ghost {
+    constructor(className, startIndex, speed){
+        this.className = className
+        this.startIndex = startIndex
+        this.speed = speed
+        this.currentIndex =startIndex
+        this.timerId = NaN
+    }
+}
+
+ghosts = [
+    new Ghost ('blinky', 348, 250),
+    new Ghost ('pinky', 376, 400),
+    new Ghost ('inky', 351, 300),
+    new Ghost ('clyde', 379, 500)
+]
+
+//draw ghosts on to the board 
+ghosts.forEach (ghost => {
+    squares[ghost.currentIndex].classList.add(ghost.className)
+    squares[ghost.currentIndex].classList.add('ghost')
+})
+
+//move ghost randomly
+ghosts.forEach(ghost => moveGhost(ghost))
+
+
+
 })
