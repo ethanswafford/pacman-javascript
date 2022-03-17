@@ -108,7 +108,7 @@ function movePacman(e) {
     squares[pacmanCurrentIndex].classList.add('pac-man')
 
     pacDotEaten()
-    //powerPelletEaten()
+    powerPelletEaten()
     //checkForGameOver
     //checkForWin
 
@@ -124,6 +124,21 @@ function pacDotEaten() {
     }
 }
 
+//when power-pellet Eaten
+function powerPelletEaten(){
+    if(squares[pacmanCurrentIndex].classList.contains('power-pellet')){
+        score +=10
+        ghosts.forEach(ghost => ghost.isScared = true)
+        setTimeout(unScareGhosts, 1000)
+        squares[pacmanCurrentIndex].classList.remove('power-pellet')
+    }
+}
+
+//stop scaring the ghost
+function unScareGhosts (){
+    ghosts.forEach(ghost => ghost.isScared = false)
+}
+
 //create ghost template 
 class Ghost {
     constructor(className, startIndex, speed){
@@ -132,6 +147,7 @@ class Ghost {
         this.speed = speed
         this.currentIndex =startIndex
         this.timerId = NaN
+        this.isScared = false
     }
 }
 
@@ -150,6 +166,33 @@ ghosts.forEach (ghost => {
 
 //move ghost randomly
 ghosts.forEach(ghost => moveGhost(ghost))
+
+//write the funtcion to move ghost
+function moveGhost(ghost) {
+    const directions = [-1, +1, width, -width]
+    let direction = directions[Math.floor(Math.random() * directions.length)]
+
+    ghost.timerId = setInterval(function() {
+        // if the next square ghost is going to go in does not contain a wall and a ghost
+        if (!squares[ghost.currentIndex + direction].classList.contains('wall') && !squares[ghost.currentIndex + directiom].classList.contains('ghost')) {
+            //you can go here
+            //remove all ghost related classes
+            squares[ghost.currentIndex].classList.remove(ghost.className, 'ghost', 'scared-ghost')
+            //change current index to new safe square
+            ghost.currentIndex += direction
+            //redraw the ghost in the safe space
+            sqaures[ghost.currentIndex].classList.add(ghost.className, 'ghost')
+
+        //else find new direction
+        } else direction = directions[Math.floor(Math.random() * directions.length)]
+    
+        //if the ghost is currently scared
+        if (ghost.isScared){
+            squares[ghostCurrentIndex].classList.add('scared-ghost')
+        }
+    
+    }, ghost.speed)
+}
 
 
 
